@@ -594,12 +594,12 @@ def takePicture():
           cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
         else:
           cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
+      else:
+        if webcamMode:
+          cmd = uploader + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
         else:
-          if webcamMode:
-            cmd = uploader + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
-          else:
-            cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
-            call ([cmd], shell=True)
+          cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
+          call ([cmd], shell=True)
             
   finally:
     # Add error handling/indicator (disk full, etc.)
