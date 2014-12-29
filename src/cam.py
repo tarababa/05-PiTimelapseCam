@@ -172,8 +172,8 @@ def viewCallback(n): # Viewfinder buttons
 	    r = imgRange(pathData[storeMode])
 	    if r: showImage(r[1]) # Show last image in directory
 	    else: screenMode = 2  # No images
-	  else: # Rest of screen = shutter
-	    takePicture()
+  else: # Rest of screen = shutter
+	  takePicture()
 	    
 def doneCallback(): # Exit settings
 	global screenMode, settingMode
