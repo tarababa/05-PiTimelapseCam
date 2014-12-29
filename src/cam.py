@@ -306,7 +306,7 @@ numberstring          = "0"        # number string from numeric keypad
 dict_idx              = "interval" # Index for time lapse settings
 v                     = { "interval": 30,   # time lapse settings
                           "images"  : 5}
-webcamMode            = False      # upload file to dropbox always with same name                        
+webcamMode            = True       # upload file to dropbox always with same name                        
 # To use Dropbox uploader, must have previously run the dropbox_uploader.sh
 # script to set up the app key and such.  If this was done as the normal pi
 # user, set upconfig to the .dropbox_uploader config file in that account's
