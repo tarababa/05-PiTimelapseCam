@@ -727,27 +727,27 @@ while(True):
     if timelapsePicturesTaken >= v['images']:
       timelapseCallback(1) #toggle timelapse to off
       # Refresh display
-    elif screenMode >= 3: # Viewfinder or settings modes
-      stream = io.BytesIO() # Capture into in-memory stream
-      camera.capture(stream, use_video_port=True, format='rgb')
-      stream.seek(0)
-      stream.readinto(rgb)  # stream -> RGB buffer
-      stream.close()
-      img = pygame.image.frombuffer(rgb[0:
-      (sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],
-      sizeData[sizeMode][1], 'RGB')
-    elif screenMode < 2: # Playback mode or delete confirmation
-      img = scaled       # Show last-loaded image
-    else:                # 'No Photos' mode
-      img = None         # You get nothing, good day sir
+  elif screenMode >= 3: # Viewfinder or settings modes
+    stream = io.BytesIO() # Capture into in-memory stream
+    camera.capture(stream, use_video_port=True, format='rgb')
+    stream.seek(0)
+    stream.readinto(rgb)  # stream -> RGB buffer
+    stream.close()
+    img = pygame.image.frombuffer(rgb[0:
+    (sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],
+    sizeData[sizeMode][1], 'RGB')
+  elif screenMode < 2: # Playback mode or delete confirmation
+    img = scaled       # Show last-loaded image
+  else:                # 'No Photos' mode
+    img = None         # You get nothing, good day sir
         
   if img is None or img.get_height() < 240: # Letterbox, clear background
     screen.fill(0)
-    if img:
-      screen.blit(img,
-        ((320 - img.get_width() ) / 2,
-         (240 - img.get_height()) / 2))
-      
+  if img:
+    screen.blit(img,
+      ((320 - img.get_width() ) / 2,
+       (240 - img.get_height()) / 2))
+    
   # Overlay buttons on display and update
   for i,b in enumerate(buttons[screenMode]):
     b.draw(screen)
@@ -767,10 +767,11 @@ while(True):
     myfont = pygame.font.SysFont('Arial', 50)
     label = myfont.render(numberstring, 1, (255,255,255))
     screen.blit(label, (10,2))
-    if timelapseStarted:
-      myfont = pygame.font.SysFont('Arial', 50)
-      label = myfont.render(str(timelapsePicturesTaken) + '/' + str(v['images']), 1, (255,255,255))
-      screen.blit(label, (10,2))
-      pygame.display.update()
+  if timelapseStarted:
+    myfont = pygame.font.SysFont('Arial', 50)
+    label = myfont.render(str(timelapsePicturesTaken) + '/' + str(v['images']), 1, (255,255,255))
+    screen.blit(label, (10,2))
+  
+  pygame.display.update()
       
   screenModePrior = screenMode
