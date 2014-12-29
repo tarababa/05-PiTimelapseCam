@@ -111,14 +111,14 @@ class Button:
   def draw(self, screen):
     if self.color:
       screen.fill(self.color, self.rect)
-      if self.iconBg:
-        screen.blit(self.iconBg.bitmap,
-          (self.rect[0]+(self.rect[2]-self.iconBg.bitmap.get_width())/2,
-            self.rect[1]+(self.rect[3]-self.iconBg.bitmap.get_height())/2))
-        if self.iconFg:
-          screen.blit(self.iconFg.bitmap,
-            (self.rect[0]+(self.rect[2]-self.iconFg.bitmap.get_width())/2,
-              self.rect[1]+(self.rect[3]-self.iconFg.bitmap.get_height())/2))
+    if self.iconBg:
+      screen.blit(self.iconBg.bitmap,
+        (self.rect[0]+(self.rect[2]-self.iconBg.bitmap.get_width())/2,
+          self.rect[1]+(self.rect[3]-self.iconBg.bitmap.get_height())/2))
+    if self.iconFg:
+      screen.blit(self.iconFg.bitmap,
+        (self.rect[0]+(self.rect[2]-self.iconFg.bitmap.get_width())/2,
+          self.rect[1]+(self.rect[3]-self.iconFg.bitmap.get_height())/2))
           
   def setBg(self, name):
     if name is None:
@@ -152,11 +152,10 @@ def quitCallback(): # Quit confirmation button
   global timelapseTimerThread
   saveSettings()
   try:
-    timelapseTimerThread.cancel()
+    timelapseTimerThread.cancel() #clean up timer thread
   except:
     pass
-  #raise SystemExit
-  sys.exit(0)
+  raise SystemExit
   
 def viewCallback(n): # Viewfinder buttons
   global loadIdx, scaled, screenMode, screenModePrior, settingMode, storeMode
@@ -180,7 +179,7 @@ def doneCallback(): # Exit settings
   if screenMode > 3:
     settingMode = screenMode
     saveSettings()
-    screenMode = 3 # Switch back to viewfinder mode
+  screenMode = 3 # Switch back to viewfinder mode
     
 def imageCallback(n): # Pass 1 (next image), -1 (prev image) or 0 (delete)
   global screenMode
@@ -306,7 +305,7 @@ numeric               = 0          # number from numeric keypad
 numberstring          = "0"        # number string from numeric keypad
 dict_idx              = "interval" # Index for time lapse settings
 v                     = { "interval": 30,   # time lapse settings
-"images"  : 5}
+                          "images"  : 5}
 webcamMode            = False      # upload file to dropbox always with same name                        
 # To use Dropbox uploader, must have previously run the dropbox_uploader.sh
 # script to set up the app key and such.  If this was done as the normal pi
@@ -320,11 +319,11 @@ sizeData = [ # Camera parameters for different size settings
   # Full res      Viewfinder  Crop window
   [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   )], # Large
   [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556)], # Med
-[(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
+  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
 
 isoData = [ # Values for ISO settings [ISO value, indicator X position]
   [  0,  27], [100,  64], [200,  97], [320, 137],
-[400, 164], [500, 197], [640, 244], [800, 297]]
+  [400, 164], [500, 197], [640, 244], [800, 297]]
 
 # A fixed list of image effects is used (rather than polling
 # camera.IMAGE_EFFECTS) because the latter contains a few elements
@@ -336,12 +335,12 @@ isoData = [ # Values for ISO settings [ISO value, indicator X position]
 fxData = [
   'none', 'sketch', 'gpen', 'pastel', 'watercolor', 'oilpaint', 'hatch',
   'negative', 'colorswap', 'posterise', 'denoise', 'blur', 'film',
-'washedout', 'emboss', 'cartoon', 'solarize' ]
+  'washedout', 'emboss', 'cartoon', 'solarize' ]
 
 pathData = [
   '/home/pi/Photos',     # Path for storeMode = 0 (Photos folder)
   '/boot/DCIM/CANON999', # Path for storeMode = 1 (Boot partition)
-'/home/pi/Photos']     # Path for storeMode = 2 (Dropbox)
+  '/home/pi/Photos']     # Path for storeMode = 2 (Dropbox)
 
 icons = [] # This list gets populated at startup
 
@@ -423,10 +422,10 @@ buttons = [
   
   # Screen mode 8 is time lapse settings
   [Button((  0,188,320, 52), bg='done', cb=doneCallback),
-   Button((260, 60, 60, 60), bg='cog', cb=valuesCallback, value= 1),
-   Button((260,120, 60, 60), bg='cog', cb=valuesCallback, value= 2),
-   Button((  0,  0, 80, 52), bg='prev', cb=settingCallback    , value=-1),
-   Button((240,  0, 80, 52), bg='next', cb=settingCallback    , value= 2)],
+   Button((260, 60, 60, 60), bg='cog',  cb=valuesCallback,  value= 1),
+   Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
+   Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
+   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2)],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
   [Button(( 0,  0, 320, 60), bg='box'),
@@ -466,8 +465,7 @@ def setIsoMode(n):
   isoMode    = n
   camera.ISO = isoData[isoMode][0]
   buttons[7][5].setBg('iso-' + str(isoData[isoMode][0]))
-  buttons[7][7].rect = ((isoData[isoMode][1] - 10,) +
-    buttons[7][7].rect[1:])
+  buttons[7][7].rect = ((isoData[isoMode][1] - 10,) +  buttons[7][7].rect[1:])
   
 def saveSettings():
   global v
@@ -476,11 +474,11 @@ def saveSettings():
     # Use a dictionary (rather than pickling 'raw' values) so
     # the number & order of things can change without breaking.
     d = { 'fx'       : fxMode,
-      'iso'      : isoMode,
-      'size'     : sizeMode,
-      'store'    : storeMode,
-      'interval' : v['interval'],
-    'images'   : v['images']}
+          'iso'      : isoMode,
+          'size'     : sizeMode,
+          'store'    : storeMode,
+          'interval' : v['interval'],
+          'images'   : v['images']}
     pickle.dump(d, outfile)
     outfile.close()
   except:
@@ -564,7 +562,7 @@ def takePicture():
     else:
       saveIdx = r[1] + 1
       if saveIdx > 9999: saveIdx = 0
-      storeModePrior = storeMode
+    storeModePrior = storeMode
       
   # Scan for next available image slot
   while True:
@@ -580,12 +578,10 @@ def takePicture():
   camera.resolution = sizeData[sizeMode][0]
   camera.crop       = sizeData[sizeMode][2]
   try:
-    camera.capture(filename, use_video_port=False, format='jpeg',
-      thumbnail=None)
+    camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
     # Set image file ownership to pi user, mode to 644
     # os.chown(filename, uid, gid) # Not working, why?
-    os.chmod(filename,
-      stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
+    os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
     img    = pygame.image.load(filename)
     scaled = pygame.transform.scale(img, sizeData[sizeMode][1])
     if storeMode == 2: # Dropbox
@@ -599,7 +595,7 @@ def takePicture():
           cmd = uploader + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
         else:
           cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
-          call ([cmd], shell=True)
+      call ([cmd], shell=True)
             
   finally:
     # Add error handling/indicator (disk full, etc.)
@@ -643,8 +639,7 @@ def showImage(n):
   t = threading.Thread(target=spinner)
   t.start()
   
-  img      = pygame.image.load(
-    pathData[storeMode] + '/IMG_' + '%04d' % n + '.JPG')
+  img      = pygame.image.load(pathData[storeMode] + '/IMG_' + '%04d' % n + '.JPG')
   scaled   = pygame.transform.scale(img, sizeData[sizeMode][1])
   loadIdx  = n
   
@@ -699,9 +694,9 @@ for s in buttons:        # For each screenful of buttons...
       if b.bg == i.name: #    Compare names; match?
         b.iconBg = i     #     Assign Icon to Button
         b.bg     = None  #     Name no longer used; allow garbage collection
-        if b.fg == i.name:
-          b.iconFg = i
-          b.fg     = None
+      if b.fg == i.name:
+        b.iconFg = i
+        b.fg     = None
           
 loadSettings() # Must come last; fiddles with Button/Icon states
 
@@ -717,11 +712,11 @@ while(True):
         pos = pygame.mouse.get_pos()
         for b in buttons[screenMode]:
           if b.selected(pos): break
-          # If in viewfinder or settings modes, stop processing touchscreen
-          # and refresh the display to show the live preview.  In other modes
-          # (image playback, etc.), stop and refresh the screen only when
-          # screenMode changes.
-          if screenMode >= 3 or screenMode != screenModePrior: break
+    # If in viewfinder or settings modes, stop processing touchscreen
+    # and refresh the display to show the live preview.  In other modes
+    # (image playback, etc.), stop and refresh the screen only when
+    # screenMode changes.
+    if screenMode >= 3 or screenMode != screenModePrior: break
           
           
           
@@ -741,17 +736,17 @@ while(True):
       img = pygame.image.frombuffer(rgb[0:
       (sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],
       sizeData[sizeMode][1], 'RGB')
-      elif screenMode < 2: # Playback mode or delete confirmation
-        img = scaled       # Show last-loaded image
-      else:                # 'No Photos' mode
-        img = None         # You get nothing, good day sir
+    elif screenMode < 2: # Playback mode or delete confirmation
+      img = scaled       # Show last-loaded image
+    else:                # 'No Photos' mode
+      img = None         # You get nothing, good day sir
         
   if img is None or img.get_height() < 240: # Letterbox, clear background
     screen.fill(0)
     if img:
       screen.blit(img,
         ((320 - img.get_width() ) / 2,
-          (240 - img.get_height()) / 2))
+         (240 - img.get_height()) / 2))
       
   # Overlay buttons on display and update
   for i,b in enumerate(buttons[screenMode]):
