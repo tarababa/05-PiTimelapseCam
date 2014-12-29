@@ -279,9 +279,9 @@ def timelapseCallback(n): # start or stop timelapse
     doTimelapsePicture = True
     print "timelapseCallback doTimelapsePicture[" + str(doTimelapsePicture) + "]"
     
-    print "doTimelapsePicture[" + str(doTimelapsePicture) + "]"
-    print "timelapseStarted[" + str(timelapseStarted) + "]"     
-    print "timelapsePicturesTaken[" + str(timelapsePicturesTaken) + "]"     
+  print "doTimelapsePicture[" + str(doTimelapsePicture) + "]"
+  print "timelapseStarted[" + str(timelapseStarted) + "]"     
+  print "timelapsePicturesTaken[" + str(timelapsePicturesTaken) + "]"     
     # Global stuff -------------------------------------------------------------
     
 screenMode      =  3      # Current screen mode; default = viewfinder
