@@ -513,8 +513,8 @@ def imgRange(path):
         i = int(file[4:8])
         if(i < min): min = i
         if(i > max): max = i
-      finally:
-        return None if min > max else (min, max)
+  finally:
+    return None if min > max else (min, max)
         
 # Busy indicator.  To use, run in separate thread, set global 'busy'
 # to False when done.
