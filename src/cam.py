@@ -350,9 +350,10 @@ fxData = [
   'washedout', 'emboss', 'cartoon', 'solarize' ]
 
 pathData = [
-  '/home/pi/Photos',     # Path for storeMode = 0 (Photos folder)
-  '/boot/DCIM/CANON999', # Path for storeMode = 1 (Boot partition)
-  '/home/pi/Photos']     # Path for storeMode = 2 (Dropbox)
+  '/home/pi/Photos',       # Path for storeMode = 0 (Photos folder)
+  '/boot/DCIM/CANON999',   # Path for storeMode = 1 (Boot partition)
+  '/home/pi/Photos',       # Path for storeMode = 2 (Dropbox)
+  '/home/pi/Photos/webcam']# path for storeMode = 3 (webcam)
 
 icons = [] # This list gets populated at startup
 
@@ -438,7 +439,7 @@ buttons = [
    Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
    Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2),
-   Button((240,  0, 80, 52), bg='timelapse_title')],
+   Button(( 81, 10,158, 35), bg='timelapse_title')],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
   [Button(( 0,  0, 320, 60), bg='box'),
@@ -565,7 +566,21 @@ def takePicture():
       # errno = 2 if can't create folder
       print errno.errorcode[e.errno]
       return
-        
+  
+  if webcamMode and not os.path.isdir(pathData[3]): 
+    try:
+      os.makedirs(pathData[3])
+      # Set new directory ownership to pi user, mode to 755
+      os.chown(pathData[storeMode], uid, gid)
+      os.chmod(pathData[storeMode],
+        stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
+        stat.S_IRGRP | stat.S_IXGRP |
+        stat.S_IROTH | stat.S_IXOTH)
+    except OSError as e:
+      # errno = 2 if can't create folder
+      print errno.errorcode[e.errno]
+      return
+    
   # If this is the first time accessing this directory,
   # scan for the max image index, start at next pos.
   if storeMode != storeModePrior:
@@ -602,18 +617,18 @@ def takePicture():
         if webcamMode:
           #since I pay for bandwith I want to upload a small image even if I 
           #want to keep a large resolution image file locally
-          webcamImage = pygame.transform.scale(img, sizeData[sizeMode[3]) 
-          pygame.image.save(pathData[storeMode]+'webcam/IMG_0001.JPG')
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG')
+          webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
+          pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
         else:
           cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       else:
         if webcamMode:
           #since I pay for bandwith I want to upload a small image even if I 
           #want to keep a large resolution image file locally
-          webcamImage = pygame.transform.scale(img, sizeData[sizeMode[3]) 
-          pygame.image.save(pathData[storeMode]+'webcam/IMG_0001.JPG')
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG')
+          webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
+          pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
         else:
           cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       call ([cmd], shell=True)
