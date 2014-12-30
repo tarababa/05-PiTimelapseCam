@@ -228,16 +228,16 @@ def valuesCallback(n): # Pass 1 (next setting) or -1 (prev setting)
   if n == -1:
     screenMode = 0
     saveSettings()
-    if n == 1:
-      dict_idx='interval'
-      numberstring = str(v[dict_idx])
-      screenMode = 9 #numeric keyboard
-      returnScreen = 8
-    elif n == 2:
-      dict_idx='images'
-      numberstring = str(v[dict_idx])
-      screenMode =  9 #numeric keyboard
-      returnScreen = 8
+  elif n == 1: #timelapse: set interval
+    dict_idx='interval'
+    numberstring = str(v[dict_idx])
+    screenMode = 9 #numeric keyboard
+    returnScreen = 8
+  elif n == 2: #timelapse: set number of pics. to take
+    dict_idx='images'
+    numberstring = str(v[dict_idx])
+    screenMode =  9 #numeric keyboard
+    returnScreen = 8
       
 def numericCallback(n): # Pass 1 (next setting) or -1 (prev setting)
   global screenMode
@@ -278,23 +278,18 @@ def timelapseCallback(n): # start or stop timelapse
     # look the same from a brightness, contrast and color perspective
     # Give the camera's auto-exposure and auto-white-balance algorithms
     # some time to measure the scene and determine appropriate values
-    camera.iso = 200
-    time.sleep(2)
+    #time.sleep(2)
     # Now fix the values
-    camera.shutter_speed = camera.exposure_speed
-    camera.exposure_mode = 'off'
+    #camera.shutter_speed = camera.exposure_speed
+    #camera.exposure_mode = 'off'
     g = camera.awb_gains
     camera.awb_mode = 'off'
     camera.awb_gains = g    
   elif n=='2':
     #take a photo
     doTimelapsePicture = True
-    print "timelapseCallback doTimelapsePicture[" + str(doTimelapsePicture) + "]"
     
-  print "doTimelapsePicture[" + str(doTimelapsePicture) + "]"
-  print "timelapseStarted[" + str(timelapseStarted) + "]"     
-  print "timelapsePicturesTaken[" + str(timelapsePicturesTaken) + "]"     
-    # Global stuff -------------------------------------------------------------
+# Global stuff -------------------------------------------------------------
     
 screenMode      =  3      # Current screen mode; default = viewfinder
 screenModePrior = -1      # Prior screen mode (for detecting changes)
@@ -439,7 +434,7 @@ buttons = [
    Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
    Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2),
-   Button(( 81, 10,158, 35), bg='timelapse_title')],
+   Button(( 81, 10,158, 53), bg='timelapse_title')],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
   [Button(( 0,  0, 320, 60), bg='box'),
@@ -703,7 +698,6 @@ gid = int(s) if s else os.getgid()
 
 # Buffers for viewfinder data
 rgb = bytearray(320 * 240 * 3)
-yuv = bytearray(320 * 240 * 3 / 2)
 
 # Init pygame and screen
 pygame.init()
