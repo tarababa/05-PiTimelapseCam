@@ -1,3 +1,9 @@
+
+Setting up tft display see:  https://learn.adafruit.com/downloads/pdf/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi.pdf
+
+Setting up camera software see: https://learn.adafruit.com/downloads/pdf/diy-wifi-raspberry-pi-touch-cam.pdf
+
+
 Setup dropbox account, adapted from http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi
 
 1. DropBox account
