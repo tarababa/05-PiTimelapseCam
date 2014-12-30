@@ -274,6 +274,18 @@ def timelapseCallback(n): # start or stop timelapse
     timelapseTimerThread.name = 'TIMELAPSE_TIMER'
     timelapseTimerThread.start()
     timelapseStarted = True
+    # fix automatic white balance and exposure mode so that pictures in sequence
+    # look the same from a brightness, contrast and color perspective
+    # Give the camera's auto-exposure and auto-white-balance algorithms
+    # some time to measure the scene and determine appropriate values
+    camera.iso = 200
+    time.sleep(2)
+    # Now fix the values
+    camera.shutter_speed = camera.exposure_speed
+    camera.exposure_mode = 'off'
+    g = camera.awb_gains
+    camera.awb_mode = 'off'
+    camera.awb_gains = g    
   elif n=='2':
     #take a photo
     doTimelapsePicture = True
@@ -317,9 +329,9 @@ upconfig        = '/home/pi/.dropbox_uploader'
 
 sizeData = [ # Camera parameters for different size settings
   # Full res      Viewfinder  Crop window
-  [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   )], # Large
-  [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556)], # Med
-  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
+  [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   ), (648, 486)], # Large
+  [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556), (480, 270)], # Med
+  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556), (640, 486)]] # Small
 
 isoData = [ # Values for ISO settings [ISO value, indicator X position]
   [  0,  27], [100,  64], [200,  97], [320, 137],
@@ -425,7 +437,8 @@ buttons = [
    Button((260, 60, 60, 60), bg='cog',  cb=valuesCallback,  value= 1),
    Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
-   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2)],
+   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2),
+   Button((240,  0, 80, 52), bg='timelapse_title')],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
   [Button(( 0,  0, 320, 60), bg='box'),
@@ -587,12 +600,20 @@ def takePicture():
     if storeMode == 2: # Dropbox
       if upconfig:
         if webcamMode:
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
+          #since I pay for bandwith I want to upload a small image even if I 
+          #want to keep a large resolution image file locally
+          webcamImage = pygame.transform.scale(img, sizeData[sizeMode[3]) 
+          pygame.image.save(pathData[storeMode]+'webcam/IMG_0001.JPG')
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG')
         else:
           cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       else:
         if webcamMode:
-          cmd = uploader + ' upload ' + filename + ' Photos/webcam/IMG_0001.JPG'
+          #since I pay for bandwith I want to upload a small image even if I 
+          #want to keep a large resolution image file locally
+          webcamImage = pygame.transform.scale(img, sizeData[sizeMode[3]) 
+          pygame.image.save(pathData[storeMode]+'webcam/IMG_0001.JPG')
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG')
         else:
           cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       call ([cmd], shell=True)
