@@ -34,6 +34,7 @@ import pygame
 import stat
 import threading
 import time
+import datetime as dt
 import timers
 import sys
 from pygame.locals import *
@@ -315,6 +316,7 @@ v                     = { "interval": 30,   # time lapse settings
                           "images"  : 5}
 webcamMode            = True       # upload file to dropbox always with same name    
 webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
+webcamModeAnnotation  = True       # Annotate image when in webcame mode
 
 # To use Dropbox uploader, must have previously run the dropbox_uploader.sh
 # script to set up the app key and such.  If this was done as the normal pi
@@ -548,7 +550,7 @@ def spinner():
   screenModePrior = -1 # Force refresh
   
 def takePicture():
-  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamImageOnly
+  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamModeAnnotation, webcamImageOnly
   
   if not os.path.isdir(pathData[storeMode]):
     try:
@@ -611,6 +613,9 @@ def takePicture():
   scaled = None
   camera.resolution = sizeData[sizeMode][0]
   camera.crop       = sizeData[sizeMode][2]
+  if webcamMode and webcamModeAnnotation:
+    camera.annotate_background = True
+    camera.annotate_text       = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
   try:
     if webcamMode and webcamImageOnly:
       camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None, resize=sizeData[sizeMode][3])
@@ -653,6 +658,10 @@ def takePicture():
     
   busy = False
   t.join()
+
+  if webcamMode and webcamModeAnnotation:
+    camera.annotate_background = False
+    camera.annotate_text       = '' 
   
   if scaled:
     if scaled.get_height() < 240: # Letterbox
