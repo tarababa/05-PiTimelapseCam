@@ -313,7 +313,9 @@ numberstring          = "0"        # number string from numeric keypad
 dict_idx              = "interval" # Index for time lapse settings
 v                     = { "interval": 30,   # time lapse settings
                           "images"  : 5}
-webcamMode            = True       # upload file to dropbox always with same name                        
+webcamMode            = True       # upload file to dropbox always with same name    
+webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
+
 # To use Dropbox uploader, must have previously run the dropbox_uploader.sh
 # script to set up the app key and such.  If this was done as the normal pi
 # user, set upconfig to the .dropbox_uploader config file in that account's
@@ -546,7 +548,7 @@ def spinner():
   screenModePrior = -1 # Force refresh
   
 def takePicture():
-  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid
+  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamImageOnly
   
   if not os.path.isdir(pathData[storeMode]):
     try:
@@ -579,20 +581,29 @@ def takePicture():
   # If this is the first time accessing this directory,
   # scan for the max image index, start at next pos.
   if storeMode != storeModePrior:
-    r = imgRange(pathData[storeMode])
-    if r is None:
-      saveIdx = 1
+    if webcamMode and webcamImageOnly:
+      #only want webcam image, always has the same index
+      saveIdx=1
     else:
-      saveIdx = r[1] + 1
-      if saveIdx > 9999: saveIdx = 0
+      r = imgRange(pathData[storeMode])
+      if r is None:
+        saveIdx = 1
+      else:
+        saveIdx = r[1] + 1
+        if saveIdx > 9999: saveIdx = 0
     storeModePrior = storeMode
       
   # Scan for next available image slot
-  while True:
-    filename = pathData[storeMode] + '/IMG_' + '%04d' % saveIdx + '.JPG'
-    if not os.path.isfile(filename): break
-    saveIdx += 1
-    if saveIdx > 9999: saveIdx = 0
+  if webcamMode and webcamImageOnly: 
+    #only want a "webcam" image
+    filename = pathData[3] + '/IMG_' + '%04d' % saveIdx + '.JPG'
+  else: 
+    while True:
+      filename = pathData[storeMode] + '/IMG_' + '%04d' % saveIdx + '.JPG'
+      if not os.path.isfile(filename): break
+      saveIdx += 1
+      if saveIdx > 9999: saveIdx = 0
+
     
   t = threading.Thread(target=spinner)
   t.start()
@@ -601,7 +612,10 @@ def takePicture():
   camera.resolution = sizeData[sizeMode][0]
   camera.crop       = sizeData[sizeMode][2]
   try:
-    camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
+    if webcamMode and webcamImageOnly:
+      camera.capture(, use_video_port=False, format='jpeg', thumbnail=None, resize=sizeDate[sizeMode][3])
+    else:
+      camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
     # Set image file ownership to pi user, mode to 644
     # os.chown(filename, uid, gid) # Not working, why?
     os.chmod(filename, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
@@ -609,23 +623,27 @@ def takePicture():
     scaled = pygame.transform.scale(img, sizeData[sizeMode][1])
     if storeMode == 2: # Dropbox
       if upconfig:
-        if webcamMode:
-          #since I pay for bandwith I want to upload a small image even if I 
+        if webcamMode and not webcamImageOnly:
+          #since I pay for data I want to upload a small image even if I 
           #want to keep a large resolution image file locally
           webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
           pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
           cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
+        elif webcamMode and webcamImageOnly:
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
         else:
           cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       else:
-        if webcamMode:
-          #since I pay for bandwith I want to upload a small image even if I 
+        if webcamMode and not webcamImageOnly:
+          #since I pay for data I want to upload a small image even if I 
           #want to keep a large resolution image file locally
           webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
           pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
+        elif webcamMode and webcamImageOnly:
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
         else:
-          cmd = uploader + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
+          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
       call ([cmd], shell=True)
             
   finally:
