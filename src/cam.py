@@ -613,7 +613,7 @@ def takePicture():
   camera.crop       = sizeData[sizeMode][2]
   try:
     if webcamMode and webcamImageOnly:
-      camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None, resize=sizeDate[sizeMode][3])
+      camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None, resize=sizeData[sizeMode][3])
     else:
       camera.capture(filename, use_video_port=False, format='jpeg', thumbnail=None)
     # Set image file ownership to pi user, mode to 644
