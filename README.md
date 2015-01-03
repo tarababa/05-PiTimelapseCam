@@ -14,7 +14,7 @@ from the time-lapse mode and at the time of writing cannot be set using the GUI.
 
 ###WebcamImageOnly
 Works only in conjunction with webcamMode activated and *Store Mode: Dropbox*. When webcamImageOnly is set to True then the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
-and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one. This option cannot controlled through GUI (yet).
+and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one. This option cannot be controlled through GUI (yet).
 
 ###WebcamModeAnnotation
 Works only in conjuction with webcamMode ativated. When webcamModeAnnotation is set to True a timestamp is embedded at the top of each picture taken. This option cannot be controlled through the GUI (yet).
