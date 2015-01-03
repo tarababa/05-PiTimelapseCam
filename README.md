@@ -44,3 +44,10 @@ Both webcamMode and webcamImagesOnly are by default set to True and at this poin
 webcamMode            = True       # upload file to dropbox always with same name    
 webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
 '''
+
+To disable the timestamp at the top of the image, which is enabled by default, turn off webcamModeAnnotation. Again this flag cannot (yet) be set using the user interface and must be
+altered directly in the code:
+'''
+webcamModeAnnotation  = True       # Annotate image when in webcame mode
+'''
+
