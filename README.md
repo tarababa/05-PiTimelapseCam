@@ -1,28 +1,46 @@
+#Pi Time-lapse Camera
+##Introduction 
+A Raspberry PI camera with time-lapse functionality. This project is combines [Adafruit's DIY WiFi Raspberry PI touchscreen Camera](https://learn.adafruit.com/diy-wifi-raspberry-pi-touch-cam/overview)
+and David Hunt's [Lapse Pi - Motorised time-lpase Rail with Raspberry Pi](http://www.davidhunt.ie/motorised-time-lapse-rail-with-raspberry-pi/).
 
-Setting up tft display see:  https://learn.adafruit.com/downloads/pdf/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi.pdf
+##Time-lapse
+This project provides the Raspberry PI camera with a time lapse mode allowing the user to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
 
-Setting up camera software see: https://learn.adafruit.com/downloads/pdf/diy-wifi-raspberry-pi-touch-cam.pdf
+##WebcamMode
+When the *webcam* mode is enabled the camera will up take each images taken, resize, copy and rename it to $HOME/Photos/webcam/IMG_0001.JPG to dropbox folder Photos/webcam/IMG_0001.JPG.
+This only works when *Store Mode: Dropbox* is selected. The original photo in its chosen resolution is not uploaded, it is however stored locally in $HOME/Photos. WebcamMode works indepent
+from the time-lapse mode and at the time of writing cannot be set using the GUI 
 
+###WebcamImageOnly
+Works only in conjunction with webcameMode activated and *Store Mode: Dropbox* when webcamImageOnly then the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
+and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one
 
-Setup dropbox account, adapted from http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi
+##Setup
+### Adafruit PiTFT 2.8" Touchscreen
+Setup your Raspberry PI and follow the instructions to setup [Adafruit's PITFT - 2.8" Touchscreen display for Raspberry PI](https://learn.adafruit.com/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi/overview)([pdf](https://learn.adafruit.com/downloads/pdf/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi.pdf)). 
+It is not necessary to add the shutdown button or any other tactile buttons on the PiTFT.
 
-1. DropBox account
+### Camera software
+To install the Pi Timelapse camera software follow Adafruit's instructions to setup the [DIY WiFI Raspberry Pi Touschscreen Camera](https://learn.adafruit.com/diy-wifi-raspberry-pi-touch-cam/overview) ([pdf](https://learn.adafruit.com/downloads/pdf/diy-wifi-raspberry-pi-touch-cam.pdf)), with
+the following exceptions:
 
-First of all you need a DropBox account. Hop on over to DropBox and get one – it’s free.
+1. Install the *latest* version of picamera
+'''
+sudo apt-get install python-pip
+sudo pip install picamera
+'''
 
-2. Download and Set Up DropBox Uploader
+2. Download and use PiTimelapseCam
+'''
+wget https://github.com/tarababa/05-PiTimelapseCam/archive/master.zip
+unzip master.zip
+sudo python cam.py
+'''
 
-cd ~  #this ensures you are in /home/pi
-git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
-ls 
+In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 
-(If this fails, you may need to install git with sudo apt-get install git-core)
-
-You should be able to see a directory called Dropbox-Uploader
-
-cd Dropbox-Uploader
-ls
-
-3. Now the fiddly bit – API keys
-
-Run the script with ./dropbox_uploader.sh (if it fails, try chmod +x dropbox_uploader.sh)
+Both webcamMode and webcamImagesOnly are by default set to True and at this point cannot be altered through the user interface in order to change alter the relevant lines in cam.py:
+'''
+webcamMode            = True       # upload file to dropbox always with same name    
+webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
+'''
