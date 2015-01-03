@@ -1,23 +1,23 @@
 #    Copyright 2014 Helios Taraba 
 #
-#    This file is part of information_display.
+#    This file provides generic timer related classes
 #
-#    information_display is free software: you can redistribute it and/or modify
+#    timers.py is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
-#    information_display is distributed in the hope that it will be useful,
+#    timers.py is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 #
 #    You should have received a copy of the GNU General Public License
-#    along with information_display.  If not, see <http://www.gnu.org/licenses/>.
+#    along with timers.py.  If not, see <http://www.gnu.org/licenses/>.
 
 
 """
-Generic timer related classed
+Generic timer related classes
              
 """
 import os,sys

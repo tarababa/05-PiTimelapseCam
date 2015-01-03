@@ -32,7 +32,7 @@ the following exceptions:
 
         wget https://github.com/tarababa/05-PiTimelapseCam/archive/master.zip
         unzip master.zip
-        sudo python cam.py
+        python cam.py
 
 In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 

@@ -21,6 +21,9 @@
 #
 # Written by Phil Burgess / Paint Your Dragon for Adafruit Industries.
 # BSD license, all text above must be included in any redistribution.
+#
+# Adapted by Helios Taraba with parts taken from lapse.py by David Hunt (https://github.com/climberhunt/LapsePiTouch)
+# Please note that this does no longer need to run as root i.e. python cam.py is sufficient.
 
 import atexit
 import cPickle as pickle
