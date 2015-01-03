@@ -25,29 +25,29 @@ To install the Pi Timelapse camera software follow Adafruit's instructions to se
 the following exceptions:
 
 1. Install the *latest* version of picamera
-'''
+```
 sudo apt-get install python-pip
 sudo pip install picamera
-'''
+```
 
 2. Download and use PiTimelapseCam
-'''
+```
 wget https://github.com/tarababa/05-PiTimelapseCam/archive/master.zip
 unzip master.zip
 sudo python cam.py
-'''
+```
 
 In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 
 Both webcamMode and webcamImagesOnly are by default set to True and at this point cannot be altered through the user interface in order to change alter the relevant lines in cam.py:
-'''
+```
 webcamMode            = True       # upload file to dropbox always with same name    
 webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
-'''
+```
 
 To disable the timestamp at the top of the image, which is enabled by default, turn off webcamModeAnnotation. Again this flag cannot (yet) be set using the user interface and must be
 altered directly in the code:
-'''
+```
 webcamModeAnnotation  = True       # Annotate image when in webcame mode
-'''
+```
 
