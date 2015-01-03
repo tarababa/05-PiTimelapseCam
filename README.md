@@ -1,7 +1,8 @@
 #Pi Time-lapse Camera
 ##Introduction 
 A Raspberry PI camera with time-lapse functionality. This project is combines [Adafruit's DIY WiFi Raspberry PI touchscreen Camera](https://learn.adafruit.com/diy-wifi-raspberry-pi-touch-cam/overview)
-and David Hunt's [Lapse Pi - Motorised time-lpase Rail with Raspberry Pi](http://www.davidhunt.ie/motorised-time-lapse-rail-with-raspberry-pi/).
+and some features from David Hunt's [Lapse Pi - Motorised time-lapse Rail with Raspberry Pi](http://www.davidhunt.ie/motorised-time-lapse-rail-with-raspberry-pi/).
+The time-lapse image image(s) can be uploaded to dropbox and used on a webpage such as a [blog](http://tarababa.blogspot.com/2014/12/langebaan-webcam.html)
 
 ##Time-lapse
 This project provides the Raspberry PI camera with a time lapse mode allowing the user to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
@@ -9,7 +10,7 @@ This project provides the Raspberry PI camera with a time lapse mode allowing th
 ##WebcamMode
 When the *webcam* mode is enabled the camera will up take each images taken, resize, copy and rename it to $HOME/Photos/webcam/IMG_0001.JPG to dropbox folder Photos/webcam/IMG_0001.JPG.
 This only works when *Store Mode: Dropbox* is selected. The original photo in its chosen resolution is not uploaded, it is however stored locally in $HOME/Photos. WebcamMode works indepent
-from the time-lapse mode and at the time of writing cannot be set using the GUI 
+from the time-lapse mode and at the time of writing cannot be set using the GUI. 
 
 ###WebcamImageOnly
 Works only in conjunction with webcamMode activated and *Store Mode: Dropbox*. When webcamImageOnly is set to True then the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
@@ -39,7 +40,7 @@ the following exceptions:
 
 In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 
-Both webcamMode and webcamImagesOnly are by default set to True and at this point cannot be altered through the user interface in order to change alter the relevant lines in cam.py:
+Both webcamMode and webcamImagesOnly are by default setup to True and at this point cannot be altered through the user interface in order to change alter the relevant lines in cam.py:
 ```
 webcamMode            = True       # upload file to dropbox always with same name    
 webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
