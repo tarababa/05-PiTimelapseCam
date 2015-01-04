@@ -828,7 +828,7 @@ while(True):
     myfont = pygame.font.SysFont('Arial', 50)
     label = myfont.render(numberstring, 1, (255,255,255))
     screen.blit(label, (10,2))
-  if timelapseStarted and screenMode = 3:
+  if timelapseStarted and screenMode == 3:
     myfont = pygame.font.SysFont('Arial', 30)
     label = myfont.render(str(timelapsePicturesTaken) + '/' + str(v['images']), 1, (255,255,255))
     screen.blit(label, (10,2))
