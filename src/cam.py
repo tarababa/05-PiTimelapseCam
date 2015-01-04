@@ -441,7 +441,7 @@ buttons = [
    Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
    Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2),
-   Button(( 81, 10,158, 53), bg='timelapse_title')],
+   Button(( 81,  7,158, 53), bg='timelapse_title')],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
   [Button(( 0,  0, 320, 60), bg='box'),
