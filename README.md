@@ -13,7 +13,7 @@ This only works when *Store Mode: Dropbox* is selected. The original photo in it
 from the time-lapse mode. This mode and the following two options can be set through the *Webcam* configuration screen.
 
 ###Webcam image only
-Works only in conjunction with Webcam mode activated and *Store Mode: Dropbox*. When checkbox for "Webcam image only" is ticked the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
+Works only in conjunction with Webcam mode activated and *Store Mode: Dropbox*. When checkbox for "Webcam image only" is ticked the camera takes a small image only which is stored locally ($HOME/Photos/webcam/IMG_0001.JPG) 
 and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one.
 
 ###Annotate image
