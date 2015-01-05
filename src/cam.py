@@ -23,7 +23,6 @@
 # BSD license, all text above must be included in any redistribution.
 #
 # Adapted by Helios Taraba with parts taken from lapse.py by David Hunt (https://github.com/climberhunt/LapsePiTouch)
-# Please note that this does no longer need to run as root i.e. python cam.py is sufficient.
 
 import atexit
 import cPickle as pickle
@@ -269,38 +268,38 @@ def webcamCallback(n): # Handle webcam configuration
   global webcamMode, webcamImageOnly, webcamModeAnnotation
   #make sure all checkboxes are correctly initialized
   if webcamMode:
-    buttons[10][1+3].setFg('tick')
+    buttons[10][1+2].setFg('tick')
   else:
-    buttons[10][1+3].setFg(None)
+    buttons[10][1+2].setFg(None)
   if webcamImageOnly:
-    buttons[10][2+3].setFg('tick')
+    buttons[10][2+2].setFg('tick')
   else:
-    buttons[10][2+3].setFg(None)
+    buttons[10][2+2].setFg(None)
   if webcamModeAnnotation:
-    buttons[10][3+3].setFg('tick')
+    buttons[10][3+2].setFg('tick')
   else:
-    buttons[10][3+3].setFg(None)
+    buttons[10][3+2].setFg(None)
   #toggle chosen check-box
   if n==1:
     if webcamMode:
-      buttons[10][1+3].setFg(None)
+      buttons[10][1+2].setFg(None)
       webcamMode = False
     else:
-      buttons[10][1+*].setFg('tick')
+      buttons[10][1+2].setFg('tick')
       webcamMode = True
   elif n==2:
     if webcamImageOnly:
-      buttons[10][2+3].setFg(None)
+      buttons[10][2+2].setFg(None)
       webcamImageOnly = False
     else:
-      buttons[10][2+3].setFg('tick')
+      buttons[10][2+2].setFg('tick')
       webcamImageOnly = True
   elif n==3:
     if webcamModeAnnotation:
-      buttons[10][3+3].setFg(None)
+      buttons[10][3+2].setFg(None)
       webcamModeAnnotation=False
     else:
-      buttons[10][3+3].setFg('tick')
+      buttons[10][3+2].setFg('tick')
       webcamModeAnnotation=True
   
     
@@ -309,7 +308,6 @@ def timelapseCallback(n): # start or stop timelapse
   global timelapseTimerThread
   global doTimelapsePicture
   global timelapsePicturesTaken
-  print "timelapseCallback n[" + str(n) + "]"        
   if n==1 and timelapseStarted:
     #stop timelapse
     try:
@@ -512,12 +510,13 @@ buttons = [
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-2), # skip numeric keypad
    Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 1),
    Button((278, 60, 42, 42), bg='checkbox', cb=webcamCallback,  value= 1),
-   Button((278,102, 60, 42), bg='checkbox', cb=webcamCallback,  value= 2),
-   Button((278,144, 60, 42), bg='checkbox', cb=webcamCallback,  value= 3),
+   Button((278,102, 42, 42), bg='checkbox', cb=webcamCallback,  value= 2),
+   Button((278,144, 42, 42), bg='checkbox', cb=webcamCallback,  value= 3),
    Button(( 81,  7,158, 53), bg='webcam_title'),
-   Button(( 0,  60,158, 42), bg='webcamMode'),
-   Button(( 0, 102,158, 42), bg='webcamImageOnly'),
-   Button(( 0, 144,158, 42), bg='webcamModeAnnotation')],   
+   Button(( 0,  60,278, 42), bg='webcamMode'),
+   Button(( 0, 102,278, 42), bg='webcamImageOnly'),
+   Button(( 0, 144,278, 42), bg='webcamModeAnnotation')
+],   
   
   # Screen mode 11 is quit confirmation
   [Button((  0,188,320, 52), bg='done'   , cb=doneCallback),
@@ -555,9 +554,9 @@ def saveSettings():
           'store'    : storeMode,
           'interval' : v['interval'],
           'images'   : v['images'],
-          'webcamMode'           : webcamMode,
-          'webcamImageOnly'      : webcamImageOnly,
-          'webcamModeAnnotation' : webcamModeAnnotation}
+          'webcamMode'           : str(webcamMode),
+          'webcamImageOnly'      : str(webcamImageOnly),
+          'webcamModeAnnotation' : str(webcamModeAnnotation)}
     pickle.dump(d, outfile)
     outfile.close()
   except:
@@ -576,17 +575,17 @@ def loadSettings():
     if 'interval'  in d: v['interval']=int(d['interval'])
     if 'images'    in d: v['images']=int(d['images'])
     if 'webcamMode' in d: 
-       if d['webcamMode']== 'True':
+       if d['webcamMode'] == 'True':
          webcamMode = True 
        else: 
          webcamMode= False
     if 'webcamImageOnly' in d: 
-       if d['webcamImageOnly']== 'True':
+       if d['webcamImageOnly'] == 'True':
          webcamImageOnly = True 
        else: 
          webcamImageOnly= False      
     if 'webcamModeAnnotation' in d: 
-       if d['webcamModeAnnotation']== 'True':
+       if d['webcamModeAnnotation'] == 'True':
          webcamModeAnnotation = True 
        else: 
          webcamModeAnnotation= False            
