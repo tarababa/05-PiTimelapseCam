@@ -7,17 +7,17 @@ The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as
 ##Time-lapse
 This project provides the Raspberry PI camera with a time lapse mode allowing the user to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
 
-##WebcamMode
-When the *webcam* mode is enabled the camera will up take each images taken, resize, copy and rename it to $HOME/Photos/webcam/IMG_0001.JPG to dropbox folder Photos/webcam/IMG_0001.JPG.
-This only works when *Store Mode: Dropbox* is selected. The original photo in its chosen resolution is not uploaded, it is however stored locally in $HOME/Photos. WebcamMode works indepent
-from the time-lapse mode and at the time of writing cannot be set using the GUI. 
+##Webcam mode
+When the *Webcam* mode is enabled each image taken is resized, renamed and copied to $HOME/Photos/webcam/IMG_0001.JPG and from there to dropbox folder Photos/webcam/IMG_0001.JPG.
+This only works when *Store Mode: Dropbox* is selected. The original photo in its chosen resolution is not uploaded, it is however stored locally in $HOME/Photos. Webcam mode works independent
+from the time-lapse mode. This mode and the following two options can be set through the *Webcam* configuration screen.
 
-###WebcamImageOnly
-Works only in conjunction with webcamMode activated and *Store Mode: Dropbox*. When webcamImageOnly is set to True then the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
-and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one. This option cannot be controlled through GUI (yet).
+###Webcam image only
+Works only in conjunction with Webcam mode activated and *Store Mode: Dropbox*. When checkbox for "Webcam image only" is ticked the camera takes a small image only which is stored locally ( $HOME/Photos/webcam/IMG_0001.JPG) 
+and uploaded to dropbox folder Photos/webcam/IMG_0001.JPG. Every new image overwrites the previous one.
 
-###WebcamModeAnnotation
-Works only in conjuction with webcamMode ativated. When webcamModeAnnotation is set to True a timestamp is embedded at the top of each picture taken. This option cannot be controlled through the GUI (yet).
+###Annotate image
+Works only in conjuction with Webcam mode ativated. When the checkbox for "Annotate image" is ticked a timestamp is embedded at the top of each picture taken.
 
 ##Setup
 ### Adafruit PiTFT 2.8" Touchscreen
@@ -36,19 +36,8 @@ the following exceptions:
 
         wget https://github.com/tarababa/05-PiTimelapseCam/archive/master.zip
         unzip master.zip
-        python cam.py
+        sudo python cam.py
 
 In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 
-Both webcamMode and webcamImagesOnly are by default setup to True and at this point cannot be altered through the user interface in order to change alter the relevant lines in cam.py:
-```
-webcamMode            = True       # upload file to dropbox always with same name    
-webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
-```
-
-To disable the timestamp at the top of the image, which is enabled by default, turn off webcamModeAnnotation. Again this flag cannot (yet) be set using the user interface and must be
-altered directly in the code:
-```
-webcamModeAnnotation  = True       # Annotate image when in webcame mode
-```
 
