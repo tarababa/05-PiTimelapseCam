@@ -309,6 +309,7 @@ def timelapseCallback(n): # start or stop timelapse
   global doTimelapsePicture
   global timelapsePicturesTaken
   if n==1 and timelapseStarted:
+    camera.awb_mode = 'auto'
     #stop timelapse
     try:
       timelapseTimerThread.cancel()
