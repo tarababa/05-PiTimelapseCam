@@ -132,7 +132,15 @@ class Button:
         if name == i.name:
           self.iconBg = i
           break
-          
+
+  def setFg(self, name):
+    if name is None:
+      self.iconFg = None
+    else:
+      for i in icons:
+        if name == i.name:
+          self.iconFg = i
+          break
           
 # UI callbacks -------------------------------------------------------------
 # These are defined before globals because they're referenced by items in
@@ -256,6 +264,45 @@ def numericCallback(n): # Pass 1 (next setting) or -1 (prev setting)
     screenMode = returnScreen
     numeric = int(numberstring)
     v[dict_idx] = numeric    
+    
+def webcamCallback(n): # Handle webcam configuration
+  global webcamMode, webcamImageOnly, webcamModeAnnotation
+  #make sure all checkboxes are correctly initialized
+  if webcamMode:
+    buttons[10][1+3].setFg('tick')
+  else:
+    buttons[10][1+3].setFg(None)
+  if webcamImageOnly:
+    buttons[10][2+3].setFg('tick')
+  else:
+    buttons[10][2+3].setFg(None)
+  if webcamModeAnnotation:
+    buttons[10][3+3].setFg('tick')
+  else:
+    buttons[10][3+3].setFg(None)
+  #toggle chosen check-box
+  if n==1:
+    if webcamMode:
+      buttons[10][1+3].setFg(None)
+      webcamMode = False
+    else:
+      buttons[10][1+*].setFg('tick')
+      webcamMode = True
+  elif n==2:
+    if webcamImageOnly:
+      buttons[10][2+3].setFg(None)
+      webcamImageOnly = False
+    else:
+      buttons[10][2+3].setFg('tick')
+      webcamImageOnly = True
+  elif n==3:
+    if webcamModeAnnotation:
+      buttons[10][3+3].setFg(None)
+      webcamModeAnnotation=False
+    else:
+      buttons[10][3+3].setFg('tick')
+      webcamModeAnnotation=True
+  
     
 def timelapseCallback(n): # start or stop timelapse
   global timelapseStarted
@@ -401,8 +448,8 @@ buttons = [
   [Button((  0,188,320, 52), bg='done', cb=doneCallback),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
    Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 1),
-   Button((  2, 60,100,120), bg='radio3-1', fg='store-folder', cb=storeModeCallback, value=0),
-   Button((110, 60,100,120), bg='radio3-0', fg='store-boot', cb=storeModeCallback, value=1),
+   Button((  2, 60,100,120), bg='radio3-1', fg='store-folder',  cb=storeModeCallback, value=0),
+   Button((110, 60,100,120), bg='radio3-0', fg='store-boot',    cb=storeModeCallback, value=1),
    Button((218, 60,100,120), bg='radio3-0', fg='store-dropbox', cb=storeModeCallback, value=2),
    Button((  0, 10,320, 35), bg='storage')],
   
@@ -440,7 +487,7 @@ buttons = [
    Button((260, 60, 60, 60), bg='cog',  cb=valuesCallback,  value= 1),
    Button((260,120, 60, 60), bg='cog',  cb=valuesCallback,  value= 2),
    Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-1),
-   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2),
+   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 2), # skip numeric keypad
    Button(( 81,  7,158, 53), bg='timelapse_title')],
   
   # Screen mode 9 is time lapse settings: numeric keyboard
@@ -458,10 +505,23 @@ buttons = [
    Button((240,120, 80, 60), bg='del',   cb=numericCallback, value=10),
    Button((180,180,140, 60), bg='ok',    cb=numericCallback, value=12),
    Button((180, 60,140, 60), bg='cancel',cb=numericCallback, value=11)],
+   
+   
+  # Screen mode 10 webcam mode settings
+  [Button((  0,188,320, 52), bg='done', cb=doneCallback),
+   Button((  0,  0, 80, 52), bg='prev', cb=settingCallback, value=-2), # skip numeric keypad
+   Button((240,  0, 80, 52), bg='next', cb=settingCallback, value= 1),
+   Button((278, 60, 42, 42), bg='checkbox', cb=webcamCallback,  value= 1),
+   Button((278,102, 60, 42), bg='checkbox', cb=webcamCallback,  value= 2),
+   Button((278,144, 60, 42), bg='checkbox', cb=webcamCallback,  value= 3),
+   Button(( 81,  7,158, 53), bg='webcam_title'),
+   Button(( 0,  60,158, 42), bg='webcamMode'),
+   Button(( 0, 102,158, 42), bg='webcamImageOnly'),
+   Button(( 0, 144,158, 42), bg='webcamModeAnnotation')],   
   
-  # Screen mode 10 is quit confirmation
+  # Screen mode 11 is quit confirmation
   [Button((  0,188,320, 52), bg='done'   , cb=doneCallback),
-   Button((  0,  0, 80, 52), bg='prev'   , cb=settingCallback, value=-2),
+   Button((  0,  0, 80, 52), bg='prev'   , cb=settingCallback, value=-1),
    Button((240,  0, 80, 52), bg='next'   , cb=settingCallback, value= 1),
    Button((110, 60,100,120), bg='quit-ok', cb=quitCallback),
    Button((  0, 10,320, 35), bg='quit')]
@@ -484,7 +544,7 @@ def setIsoMode(n):
   buttons[7][7].rect = ((isoData[isoMode][1] - 10,) +  buttons[7][7].rect[1:])
   
 def saveSettings():
-  global v
+  global v, webcamMode, webcamImageOnly, webcamModeAnnotation
   try:
     outfile = open('cam.pkl', 'wb')
     # Use a dictionary (rather than pickling 'raw' values) so
@@ -494,14 +554,17 @@ def saveSettings():
           'size'     : sizeMode,
           'store'    : storeMode,
           'interval' : v['interval'],
-          'images'   : v['images']}
+          'images'   : v['images'],
+          'webcamMode'           : webcamMode,
+          'webcamImageOnly'      : webcamImageOnly,
+          'webcamModeAnnotation' : webcamModeAnnotation}
     pickle.dump(d, outfile)
     outfile.close()
   except:
     pass
   
 def loadSettings():
-  global v
+  global v, webcamMode, webcamImageOnly, webcamModeAnnotation
   try:
     infile = open('cam.pkl', 'rb')
     d      = pickle.load(infile)
@@ -512,6 +575,21 @@ def loadSettings():
     if 'store'     in d: storeModeCallback(d['store'])
     if 'interval'  in d: v['interval']=int(d['interval'])
     if 'images'    in d: v['images']=int(d['images'])
+    if 'webcamMode' in d: 
+       if d['webcamMode']== 'True':
+         webcamMode = True 
+       else: 
+         webcamMode= False
+    if 'webcamImageOnly' in d: 
+       if d['webcamImageOnly']== 'True':
+         webcamImageOnly = True 
+       else: 
+         webcamImageOnly= False      
+    if 'webcamModeAnnotation' in d: 
+       if d['webcamModeAnnotation']== 'True':
+         webcamModeAnnotation = True 
+       else: 
+         webcamModeAnnotation= False            
   except:
     pass
   
@@ -741,7 +819,6 @@ atexit.register(camera.close)
 camera.resolution = sizeData[sizeMode][1]
 #camera.crop       = sizeData[sizeMode][2]
 camera.crop       = (0.0, 0.0, 1.0, 1.0)
-# Leave raw format at default YUV, don't touch, don't set to RGB!
 
 # Load all icons at startup.
 for file in os.listdir(iconPath):
@@ -760,7 +837,7 @@ for s in buttons:        # For each screenful of buttons...
         b.fg     = None
           
 loadSettings() # Must come last; fiddles with Button/Icon states
-
+webcamCallback(None) # Must come after load settings; fiddles with Button/Icon states in the webcam config screen.
 
 # Main loop ----------------------------------------------------------------
 
