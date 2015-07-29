@@ -204,7 +204,16 @@ def deleteCallback(n): # Delete confirmation
   screenMode      =  0
   screenModePrior = -1
   if n is True:
-    os.remove(pathData[storeMode] + '/IMG_' + '%04d' % loadIdx + '.JPG')
+    if webcamMode:
+      try:
+        os.remove(pathData[storeMode] + '/webcam/IMG_' + '%04d' % loadIdx + '.JPG')
+      except:
+        None
+    else:
+      try:
+        os.remove(pathData[storeMode] + '/IMG_' + '%04d' % loadIdx + '.JPG')
+      except:
+        None      
     if(imgRange(pathData[storeMode])):
       screen.fill(0)
       pygame.display.update()
@@ -332,9 +341,11 @@ def timelapseCallback(n): # start or stop timelapse
     # Now fix the values
     #camera.shutter_speed = camera.exposure_speed
     #camera.exposure_mode = 'off'
-    g = camera.awb_gains
-    camera.awb_mode = 'off'
-    camera.awb_gains = g    
+    #29.07.2015 setting awb_mode to auto. Perhaps one day I will have time
+    #to add a menu so user can set awb
+    #g = camera.awb_gains
+    camera.awb_mode = 'auto'
+    #camera.awb_gains = g    
   elif n=='2':
     #take a photo
     doTimelapsePicture = True
