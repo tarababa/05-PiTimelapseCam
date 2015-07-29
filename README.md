@@ -7,14 +7,23 @@ The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as
 ##Overview
 A quick overview of the capabilities of this application, to some extent a repetition of the information provided by the linked documents in the previous chapter
 ###Startup screen
-The startup screen has three buttons at the bottom, from left to right:
+The startup screen as shown below has three buttons at the bottom, from left to right:
 * Settings: navigate to settings menus
 * Timelapse: toggles timelapse between on and off
 * Preview: show fotos taken
 
-Touching the screen anywhere else besides the buttons will take a foto.
+Touching the screen anywhere else besides the buttons will take a foto, as shown in the righ-hand screenshot below.
 
-![Start-up screen](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen.png)
+![Start-up screen](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen.png) | ![Start-up screen working](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen_working.png)
+
+###Settings
+To navigate between the various settings use the top arrows in the settings menus.The done button at the bottom of the settings menu takes the user back to the main screen.
+####Effect
+Use the bottom arrows to select the desired effect.
+
+![Effect settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_effect.png) | 
+
+####ISO
 
 ##Time-lapse
 This project provides the Raspberry PI camera with a time lapse mode which allows to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
