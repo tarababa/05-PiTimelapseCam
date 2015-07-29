@@ -12,9 +12,9 @@ An overview of the capabilities of this application, to some extent a repetition
 The startup screen as shown below has three buttons at the bottom, from left to right:
 * Settings: navigate to settings menus
 * Timelapse: toggles timelapse between on and off
-* Preview: show fotos taken
+* Preview: show photos taken
 
-Touching the screen anywhere else besides the buttons will take a foto, as shown in the righ-hand screenshot below.
+Touching the screen anywhere else besides the buttons will take a photo, as shown in the righ-hand screenshot below.
 
 ![Start-up screen](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen.png) | ![Start-up screen working](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen_working.png)
 
@@ -22,12 +22,12 @@ Touching the screen anywhere else besides the buttons will take a foto, as shown
 To navigate between the various settings use the top arrows in the settings menus.The done button at the bottom of the settings menu takes the user back to the main screen.
 
 ####Storage
-Where your fotos should be stored by selecting the desired option. To use Dropbox, which is essentail for the webcam mode described further below, a Dropbox account must be created as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
+Where your photos should be stored by selecting the desired option. To use Dropbox, which is essentail for the webcam mode described further below, a Dropbox account must be created as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
 
 ![Storage settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_storage.png) 
 
 ####Size
-Select the size for your fotos.
+Select the size for your photos.
 
 ![Size settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_size.png) 
 
@@ -42,7 +42,7 @@ Use the bottom arrows to change the ISO setting
 ![ISO settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_iso.png) 
 
 ####Time-lapse
-Here we can define the number of fotos (*Images*), max 9999, and the time-delay in seconds (*Interval*) between the fotos for the time-lapse mode.
+Here we can define the number of photos (*Images*), max 9999, and the time-delay in seconds (*Interval*) between the photos for the time-lapse mode.
 Click the sprocket symbol next to these values to change them using the keypad dialog as shown in the two screen shots below.
 
 ![Time-lapse settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_timelapse.png)|![Time-lapse settings](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/settings_timelapse_change.png)
