@@ -4,8 +4,12 @@ A Raspberry PI camera with time-lapse functionality. This project is combines [A
 and some features from David Hunt's [Lapse Pi - Motorised time-lapse Rail with Raspberry Pi](http://www.davidhunt.ie/motorised-time-lapse-rail-with-raspberry-pi/).
 The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as a [blog](http://tarababa.blogspot.com/2014/12/langebaan-webcam.html)
 
+
 ##Time-lapse
-This project provides the Raspberry PI camera with a time lapse mode allowing the user to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
+This project provides the Raspberry PI camera with a time lapse mode which allows to set the number of images and the delay between images using the PI TFT 2.8 inch touch screen.
+
+![Start-up screen](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/mainscreen.png)
+
 
 ##Webcam mode
 When the *Webcam* mode is enabled each image taken is resized, renamed and copied to $HOME/Photos/webcam/IMG_0001.JPG and from there to dropbox folder Photos/webcam/IMG_0001.JPG.
