@@ -2,9 +2,9 @@
 ##Introduction 
 A Raspberry PI camera with time-lapse functionality. This project is combines [Adafruit's DIY WiFi Raspberry PI touchscreen Camera](https://learn.adafruit.com/diy-wifi-raspberry-pi-touch-cam/overview)
 and some features from David Hunt's [Lapse Pi - Motorised time-lapse Rail with Raspberry Pi](http://www.davidhunt.ie/motorised-time-lapse-rail-with-raspberry-pi/).
-The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as a [blog](http://tarababa.blogspot.com/2014/12/langebaan-webcam.html)
+The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as a [blog](http://tarababa.blogspot.com/2014/12/langebaan-webcam.html) or in this read.me as shown below.
 
-![Time-lapse Camera](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/timelapseCamInaBox.jpg)
+![Time-lapse Camera](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/timelapseCamInaBox.jpg) <img src="https://dl.dropboxusercontent.com/s/hbpw8lk70x03uzi/IMG_0001.JPG" width="320">
 
 ##Overview
 An overview of the capabilities of this application, to some extent a repetition of the information provided by the linked documents in the previous chapter.
