@@ -7,7 +7,7 @@ The time-lapse image(s) can be uploaded to dropbox and used on a webpage such as
 ![Time-lapse Camera](https://github.com/tarababa/05-PiTimelapseCam/blob/master/img/doc/timelapseCamInaBox.jpg) <img src="https://dl.dropboxusercontent.com/s/hbpw8lk70x03uzi/IMG_0001.JPG" width="320">
 
 ##Overview
-An overview of the capabilities of this application, to some extent a repetition of the information provided by the linked documents in the previous chapter.
+An overview of the capabilities of this application, to a large extent a repetition of the information provided by the linked documents in the previous chapter.
 ###Startup screen
 The startup screen as shown below has three buttons at the bottom, from left to right:
 * Settings: navigate to settings menus
