@@ -80,7 +80,19 @@ the following exceptions:
         unzip master.zip
         sudo python ./05-PiTimelapseCam/src/cam.py
 
-In order to use the webcam mode it is essential to set a dropbox account as described on [raspi.tv](http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi)
+### Dropbox
+In order to use the webcam mode it is essential to setup a dropbox account and allow your (this) app access as described [Developers - Dropbox](https://www.dropbox.com/developers/reference/oauth-guide)
+
+In for cam.py to run with dropbox you have to run it at least once with your dropbox access token hardcoded, find the below code in cam.py and replace YOUR_ACCESS_TOKEN with yours.
+
+```python
+#Set your dropbox access token here, the program must run at least once to 
+#"pickle" the access token
+if dropboxAccessToken is None or dropboxAccessToken == 'None': 
+  dropboxAccessToken = 'YOUR_ACCESS_TOKEN'
+  saveSettings()
+```
+
 
 
 
