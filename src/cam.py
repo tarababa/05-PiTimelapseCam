@@ -18,6 +18,7 @@
 # http://learn.adafruit.com/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi
 # Dropbox setup (if using the Dropbox upload feature):
 # http://raspi.tv/2013/how-to-use-dropbox-with-raspberry-pi
+# 15.01.2015 Using native dropbox API to upload files
 #
 # Written by Phil Burgess / Paint Your Dragon for Adafruit Industries.
 # BSD license, all text above must be included in any redistribution.
@@ -39,6 +40,7 @@ import time
 import datetime as dt
 import timers
 import sys
+import dropbox
 from pygame.locals import *
 from subprocess import call  
 
@@ -377,6 +379,7 @@ v                     = { "interval": 30,   # time lapse settings
 webcamMode            = True       # upload file to dropbox always with same name    
 webcamImageOnly       = True       # only take small size pic. for upload to dropbox.
 webcamModeAnnotation  = True       # Annotate image when in webcame mode
+dropboxAccessToken    = None       # dropbox access token
 
 # To use Dropbox uploader, must have previously run the dropbox_uploader.sh
 # script to set up the app key and such.  If this was done as the normal pi
@@ -555,7 +558,7 @@ def setIsoMode(n):
   buttons[7][7].rect = ((isoData[isoMode][1] - 10,) +  buttons[7][7].rect[1:])
   
 def saveSettings():
-  global v, webcamMode, webcamImageOnly, webcamModeAnnotation
+  global v, webcamMode, webcamImageOnly, webcamModeAnnotation, dropboxAccessToken
   try:
     outfile = open('cam.pkl', 'wb')
     # Use a dictionary (rather than pickling 'raw' values) so
@@ -568,14 +571,15 @@ def saveSettings():
           'images'   : v['images'],
           'webcamMode'           : str(webcamMode),
           'webcamImageOnly'      : str(webcamImageOnly),
-          'webcamModeAnnotation' : str(webcamModeAnnotation)}
+          'webcamModeAnnotation' : str(webcamModeAnnotation),
+          'dropboxAccessToken'   : str(dropboxAccessToken)}
     pickle.dump(d, outfile)
     outfile.close()
   except:
     pass
   
 def loadSettings():
-  global v, webcamMode, webcamImageOnly, webcamModeAnnotation
+  global v, webcamMode, webcamImageOnly, webcamModeAnnotation, dropboxAccessToken
   try:
     infile = open('cam.pkl', 'rb')
     d      = pickle.load(infile)
@@ -600,7 +604,11 @@ def loadSettings():
        if d['webcamModeAnnotation'] == 'True':
          webcamModeAnnotation = True 
        else: 
-         webcamModeAnnotation= False            
+         webcamModeAnnotation= False
+    if 'dropboxAccessToken' in d:
+      dropboxAccessToken=d['dropboxAccessToken']
+    else:
+      dropboxAccessToken = None
   except:
     pass
   
@@ -642,7 +650,7 @@ def spinner():
   screenModePrior = -1 # Force refresh
   
 def takePicture():
-  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamModeAnnotation, webcamImageOnly
+  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamModeAnnotation, webcamImageOnly, dropboxAccessToken
   
   if not os.path.isdir(pathData[storeMode]):
     try:
@@ -719,30 +727,30 @@ def takePicture():
     img    = pygame.image.load(filename)
     scaled = pygame.transform.scale(img, sizeData[sizeMode][1])
     if storeMode == 2: # Dropbox
-      if upconfig:
+      #get the dropbox client, if a valid dropbox access token was load in loadSettings
+      #if dropboxAccessToken is not None:
+      try:
+        dropboxClient = dropbox.client.DropboxClient(dropboxAccessToken)
+      except:
+        dropboxClient = None
+      if dropboxClient is not None:
         if webcamMode and not webcamImageOnly:
           #since I pay for data I want to upload a small image even if I 
           #want to keep a large resolution image file locally
           webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
           pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
+          #cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
+          f=open(pathData[storeMode]+'/webcam/IMG_0001.JPG', 'rb')
+          response = dropboxClient.put_file('Photos/webcam/IMG_0001.JPG', f, overwrite=True)
         elif webcamMode and webcamImageOnly:
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
+          #cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
+          f=open(filename, 'rb')
+          response = dropboxClient.put_file('Photos/webcam/' + os.path.basename(filename), f, overwrite=True)
         else:
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
-      else:
-        if webcamMode and not webcamImageOnly:
-          #since I pay for data I want to upload a small image even if I 
-          #want to keep a large resolution image file locally
-          webcamImage = pygame.transform.scale(img, sizeData[sizeMode][3]) 
-          pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
-        elif webcamMode and webcamImageOnly:
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
-        else:
-          cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
-      call ([cmd], shell=True)
-            
+          f=open(filename, 'rb')
+          #cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
+          response = dropboxClient.put_file('Photos/' + os.path.basename(filename), f, overwrite=True)
+           
   finally:
     # Add error handling/indicator (disk full, etc.)
     camera.resolution = sizeData[sizeMode][1]
@@ -849,6 +857,14 @@ for s in buttons:        # For each screenful of buttons...
           
 loadSettings() # Must come last; fiddles with Button/Icon states
 webcamCallback(None) # Must come after load settings; fiddles with Button/Icon states in the webcam config screen.
+
+#Set your dropbox access token here, the program must run at least once to 
+#"pickle" the access token
+if dropboxAccessToken is None or dropboxAccessToken == 'None': 
+  dropboxAccessToken = 'YOUR_ACCESS_TOKEN'
+  saveSettings()
+
+
 
 # Main loop ----------------------------------------------------------------
 

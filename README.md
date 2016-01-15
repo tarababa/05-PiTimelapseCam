@@ -69,7 +69,12 @@ the following exceptions:
 
         sudo apt-get install python-pip
         sudo pip install picamera
-2. Download and use PiTimelapseCam
+
+2. Install python dropbox library
+        
+        sudo pip install dropbox
+
+3. Download and use PiTimelapseCam
 
         wget https://github.com/tarababa/05-PiTimelapseCam/archive/master.zip
         unzip master.zip
