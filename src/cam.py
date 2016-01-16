@@ -27,7 +27,7 @@
 
 import atexit
 import cPickle as pickle
-import errno
+import errno, logging, traceback
 import fnmatch
 import io
 import os
@@ -41,6 +41,7 @@ import datetime as dt
 import timers
 import sys
 import dropbox
+import configuration
 from pygame.locals import *
 from subprocess import call  
 
@@ -386,8 +387,14 @@ dropboxAccessToken    = None       # dropbox access token
 # user, set upconfig to the .dropbox_uploader config file in that account's
 # home directory.  Alternately, could run the setup script as root and
 # delete the upconfig line below.
-uploader        = '/home/pi/Dropbox-Uploader/dropbox_uploader.sh'
-upconfig        = '/home/pi/.dropbox_uploader'
+#uploader        = '/home/pi/Dropbox-Uploader/dropbox_uploader.sh'
+#upconfig        = '/home/pi/.dropbox_uploader'
+
+#initialize logger
+configuration.logging_configuration()
+logger = configuration.init_log('WEBCAM')
+logger = logging.getLogger('WEBCAM')  
+logger.info('logger initialized')
 
 sizeData = [ # Camera parameters for different size settings
   # Full res      Viewfinder  Crop window
@@ -650,7 +657,7 @@ def spinner():
   screenModePrior = -1 # Force refresh
   
 def takePicture():
-  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamModeAnnotation, webcamImageOnly, dropboxAccessToken
+  global busy, gid, loadIdx, saveIdx, scaled, sizeMode, storeMode, storeModePrior, uid, webcamMode, webcamModeAnnotation, webcamImageOnly, dropboxAccessToken, logger
   
   if not os.path.isdir(pathData[storeMode]):
     try:
@@ -677,7 +684,8 @@ def takePicture():
         stat.S_IROTH | stat.S_IXOTH)
     except OSError as e:
       # errno = 2 if can't create folder
-      print errno.errorcode[e.errno]
+      #print errno.errorcode[e.errno]
+      logger.error('unexpected error ['+ str(traceback.format_exc()) + ']')  
       return
     
   # If this is the first time accessing this directory,
@@ -732,6 +740,7 @@ def takePicture():
       try:
         dropboxClient = dropbox.client.DropboxClient(dropboxAccessToken)
       except:
+        logger.error('unexpected error ['+ str(traceback.format_exc()) + ']')  
         dropboxClient = None
       if dropboxClient is not None:
         if webcamMode and not webcamImageOnly:
@@ -741,23 +750,38 @@ def takePicture():
           pygame.image.save(webcamImage, pathData[storeMode]+'/webcam/IMG_0001.JPG')
           #cmd = uploader + ' -f ' + upconfig + ' upload ' + pathData[storeMode]+'/webcam/IMG_0001.JPG' + ' Photos/webcam/IMG_0001.JPG'
           f=open(pathData[storeMode]+'/webcam/IMG_0001.JPG', 'rb')
-          response = dropboxClient.put_file('Photos/webcam/IMG_0001.JPG', f, overwrite=True)
+          try:
+            response = dropboxClient.put_file('Photos/webcam/IMG_0001.JPG', f, overwrite=True)
+            logger.info('1: uploaded image')  
+          except:
+            logger.error('1: unexpected error ['+ str(traceback.format_exc()) + ']')  
         elif webcamMode and webcamImageOnly:
           #cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/webcam/' + os.path.basename(filename)
           f=open(filename, 'rb')
-          response = dropboxClient.put_file('Photos/webcam/' + os.path.basename(filename), f, overwrite=True)
+          try:
+            response = dropboxClient.put_file('Photos/webcam/' + os.path.basename(filename), f, overwrite=True)
+            logger.info('2: uploaded image')
+          except:
+            logger.error('2: unexpected error ['+ str(traceback.format_exc()) + ']')  
         else:
           f=open(filename, 'rb')
           #cmd = uploader + ' -f ' + upconfig + ' upload ' + filename + ' Photos/' + os.path.basename(filename)
-          response = dropboxClient.put_file('Photos/' + os.path.basename(filename), f, overwrite=True)
-           
+          try:
+            response = dropboxClient.put_file('Photos/' + os.path.basename(filename), f, overwrite=True)
+            logger.info('3: uploaded image')
+          except:
+            logger.error('3: unexpected error ['+ str(traceback.format_exc()) + ']')  
+  except:
+    #catch any error and log it
+    logger.error('unexpected error ['+ str(traceback.format_exc()) + ']')  
   finally:
     # Add error handling/indicator (disk full, etc.)
     camera.resolution = sizeData[sizeMode][1]
     camera.crop       = (0.0, 0.0, 1.0, 1.0)
-    
-  busy = False
-  t.join()
+    #sure spinner thread is joined.
+    busy = False
+    t.join()    
+
 
   if webcamMode and webcamModeAnnotation:
     camera.annotate_background = False
